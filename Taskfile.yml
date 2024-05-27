@@ -1,0 +1,13 @@
+version: "3.0"
+
+tasks:
+  mocks:
+    cmds:
+      - mockery
+  tests:
+    cmds:
+      - go test -v ./... | grep -v "\[no test files\]"
+  build:
+    desc: "Build the project"
+    cmds:
+      - go build -o bin/kli ./*.go

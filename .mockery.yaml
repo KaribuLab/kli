@@ -1,0 +1,5 @@
+with-expecter: true
+packages:
+  github.com/KaribuLab/kli/git:
+    interfaces:
+      Cmd:
