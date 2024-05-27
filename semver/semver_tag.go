@@ -32,7 +32,7 @@ func tagExists(tag string, tags []git.GitTag) bool {
 func createTagIfNeeded(pattern string, major int, minor int, patch int, createTags bool, commitHash string, tags []git.GitTag, verbose bool, gitCmd git.Cmd, cmd *cobra.Command) string {
 	if createTags {
 		tag := generateTag(pattern, major, minor, patch)
-		if tagExists(tag, tags) {
+		if !tagExists(tag, tags) {
 			cmd.Println(tag)
 			gitCmd.Tag(verbose, tag, commitHash)
 			gitCmd.PushTags(verbose, tag)
