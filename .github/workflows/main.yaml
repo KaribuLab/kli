@@ -41,11 +41,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: kli
-        path: ./kli
+        path: bin/kli
     -
       name: Install kli
       run: |
-        chmod +x ./kli
+        chmod +x bin/kli
     -
       name: Checkout
       uses: actions/checkout@v4
@@ -82,13 +82,13 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: kli
-        path: ./kli
+        path: bin/kli
     -
       name: Install kli
       run: |
-        chmod +x ./kli
+        chmod +x bin/kli
     -
       name: Push tags if needed
       id: push_tags
       run: |
-        ./kli semver -t -v
+        ./bin/kli semver -t -v
