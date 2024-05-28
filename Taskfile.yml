@@ -8,6 +8,8 @@ tasks:
     cmds:
       - go test -v ./... | grep -v "\[no test files\]"
   build:
+    deps:
+      - tests
     desc: "Build the project"
     cmds:
       - go build -o bin/kli ./*.go
