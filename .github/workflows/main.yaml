@@ -37,20 +37,16 @@ jobs:
       tag_exists: ${{ steps.check_tag.outputs.tag_exists }}
     steps:
     -
+      name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    -
       name: Download kli
       uses: actions/download-artifact@v4
       with:
         name: kli
         path: bin/kli
-    -
-      name: Install kli
-      run: |
-        chmod +x bin/kli
-    -
-      name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
     -
       name: Check tag
       id: check_tag
@@ -83,10 +79,6 @@ jobs:
       with:
         name: kli
         path: bin/kli
-    -
-      name: Install kli
-      run: |
-        chmod +x bin/kli
     -
       name: Push tags if needed
       id: push_tags
