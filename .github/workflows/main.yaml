@@ -41,11 +41,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: kli
-        path: /usr/bin/kli
+        path: ./kli
     -
       name: Install kli
       run: |
-        chmod +x /usr/bin/kli
+        chmod +x ./kli
     -
       name: Checkout
       uses: actions/checkout@v4
@@ -55,7 +55,7 @@ jobs:
       name: Check tag
       id: check_tag
       run: |
-        LATEST_VERSION=$( kli semver )
+        LATEST_VERSION=$( ./kli semver )
         LATEST_GIT_TAG=$( git describe --tags --abbrev=0 )
         if [ "$LATEST_VERSION" == "$LATEST_GIT_TAG" ]; then
           echo "tag_exists=true" >> "$GITHUB_OUTPUT"
@@ -78,7 +78,17 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
     -
+      name: Download kli
+      uses: actions/download-artifact@v4
+      with:
+        name: kli
+        path: ./kli
+    -
+      name: Install kli
+      run: |
+        chmod +x ./kli
+    -
       name: Push tags if needed
       id: push_tags
       run: |
-        kli semver -t -v
+        ./kli semver -t -v
