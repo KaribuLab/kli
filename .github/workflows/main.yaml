@@ -54,9 +54,13 @@ jobs:
         chmod +x ./kli
         LATEST_VERSION=$( ./kli semver )
         LATEST_GIT_TAG=$( git describe --tags --abbrev=0 )
+        echo "latest_version=$LATEST_VERSION"
+        echo "latest_git_tag=$LATEST_GIT_TAG"
         if [ "$LATEST_VERSION" == "$LATEST_GIT_TAG" ]; then
+          echo "tag_exists=true"
           echo "tag_exists=true" >> "$GITHUB_OUTPUT"
         else
+          echo "tag_exists=false"
           echo "tag_exists=false" >> "$GITHUB_OUTPUT"
         fi
   create_tag:
