@@ -51,6 +51,7 @@ jobs:
       name: Check tag
       id: check_tag
       run: |
+        chmod +x ./kli
         LATEST_VERSION=$( ./kli semver )
         LATEST_GIT_TAG=$( git describe --tags --abbrev=0 )
         if [ "$LATEST_VERSION" == "$LATEST_GIT_TAG" ]; then
@@ -83,4 +84,5 @@ jobs:
       name: Push tags if needed
       id: push_tags
       run: |
+        chmod +x ./kli
         ./kli semver -t -v
