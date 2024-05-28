@@ -52,7 +52,7 @@ jobs:
       id: check_tag
       run: |
         chmod +x ./kli
-        LATEST_VERSION=$( ./kli semver )
+        LATEST_VERSION=$( ./kli semver 2>&1 )
         LATEST_GIT_TAG=$( git describe --tags --abbrev=0 )
         echo "latest_version=$LATEST_VERSION"
         echo "latest_git_tag=$LATEST_GIT_TAG"
