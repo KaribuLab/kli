@@ -46,12 +46,12 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: kli
-        path: bin/kli
+        path: ./
     -
       name: Check tag
       id: check_tag
       run: |
-        LATEST_VERSION=$( ./bin/kli semver )
+        LATEST_VERSION=$( ./kli semver )
         LATEST_GIT_TAG=$( git describe --tags --abbrev=0 )
         if [ "$LATEST_VERSION" == "$LATEST_GIT_TAG" ]; then
           echo "tag_exists=true" >> "$GITHUB_OUTPUT"
@@ -78,9 +78,9 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: kli
-        path: bin/kli
+        path: ./
     -
       name: Push tags if needed
       id: push_tags
       run: |
-        ./bin/kli semver -t -v
+        ./kli semver -t -v
