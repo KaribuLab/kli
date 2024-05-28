@@ -25,14 +25,23 @@ jobs:
       run: |
         go test -v ./... | grep -v "\[no test files\]"
         go build -o bin/kli ./*.go
-        # Share bin binary with other jobs
-        echo "::set-output name=bin::bin/kli"
+    -
+      uses: actions/upload-artifact@v4
+      with:
+        name: kli
+        path: bin/kli
   check_tag:
     needs: build
     runs-on: ubuntu-latest
     outputs:
       tag_exists: ${{ steps.check_tag.outputs.tag_exists }}
     steps:
+    -
+      name: Download kli
+      uses: actions/download-artifact@v4
+      with:
+        name: kli
+        path: /usr/local/bin/kli
     -
       name: Checkout
       uses: actions/checkout@v4
