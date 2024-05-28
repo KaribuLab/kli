@@ -55,7 +55,7 @@ jobs:
       name: Check tag
       id: check_tag
       run: |
-        LATEST_VERSION=$( ./kli semver )
+        LATEST_VERSION=$( ./bin/kli semver )
         LATEST_GIT_TAG=$( git describe --tags --abbrev=0 )
         if [ "$LATEST_VERSION" == "$LATEST_GIT_TAG" ]; then
           echo "tag_exists=true" >> "$GITHUB_OUTPUT"
