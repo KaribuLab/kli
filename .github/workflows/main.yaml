@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  create_tag:
+    runs-on: ubuntu-latest
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    -
+      name: Set up Git user
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+    -
+      name: Build kli (temporary)
+      id: build_kli
+      run: |
+        go build -o bin/kli ./*.go
+        ./bin/kli semver -t -v
