@@ -13,6 +13,7 @@ type Cmd interface {
 	Tag(verbose bool, tag string, commit string) error
 	CurrentBranch(verbose bool) (string, error)
 	PushTags(verbose bool, tag string) error
+	RemoveTag(verbose bool, tag string) error
 }
 
 // GitCmd is a struct that holds the path to the git executable
@@ -27,6 +28,9 @@ func NewGitCmd() *GitCmd {
 
 // Run executes a git command
 func (g *GitCmd) Run(verbose bool, args ...string) (string, error) {
+	if verbose {
+		fmt.Println("Running git command: " + g.Path + " " + strings.Join(args, " "))
+	}
 	cmd := exec.Command(g.Path, args...)
 	out, err := cmd.CombinedOutput()
 	if verbose {
@@ -108,6 +112,25 @@ func (g *GitCmd) PushTags(verbose bool, tag string) error {
 	_, err := g.Run(verbose, "push", "origin", tag)
 	if err != nil {
 		return fmt.Errorf("error pushing tags: %s", err)
+	}
+	return nil
+}
+
+// RemoveTag removes a tag
+func (g *GitCmd) RemoveTag(verbose bool, tag string) error {
+	out, err := g.Run(verbose, "push", "origin", "--delete", tag)
+	if verbose {
+		fmt.Println(out)
+	}
+	if err != nil {
+		return fmt.Errorf("error removing tag: %s", err)
+	}
+	out, err = g.Run(verbose, "tag", "-d", tag)
+	if verbose {
+		fmt.Println(out)
+	}
+	if err != nil {
+		return fmt.Errorf("error removing tag: %s", err)
 	}
 	return nil
 }

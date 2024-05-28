@@ -223,6 +223,49 @@ func (_c *MockCmd_PushTags_Call) RunAndReturn(run func(bool, string) error) *Moc
 	return _c
 }
 
+// RemoveTag provides a mock function with given fields: verbose, tag
+func (_m *MockCmd) RemoveTag(verbose bool, tag string) error {
+	ret := _m.Called(verbose, tag)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(bool, string) error); ok {
+		r0 = rf(verbose, tag)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockCmd_RemoveTag_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RemoveTag'
+type MockCmd_RemoveTag_Call struct {
+	*mock.Call
+}
+
+// RemoveTag is a helper method to define mock.On call
+//   - verbose bool
+//   - tag string
+func (_e *MockCmd_Expecter) RemoveTag(verbose interface{}, tag interface{}) *MockCmd_RemoveTag_Call {
+	return &MockCmd_RemoveTag_Call{Call: _e.mock.On("RemoveTag", verbose, tag)}
+}
+
+func (_c *MockCmd_RemoveTag_Call) Run(run func(verbose bool, tag string)) *MockCmd_RemoveTag_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(bool), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockCmd_RemoveTag_Call) Return(_a0 error) *MockCmd_RemoveTag_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockCmd_RemoveTag_Call) RunAndReturn(run func(bool, string) error) *MockCmd_RemoveTag_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Run provides a mock function with given fields: verbose, args
 func (_m *MockCmd) Run(verbose bool, args ...string) (string, error) {
 	_va := make([]interface{}, len(args))
