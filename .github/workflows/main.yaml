@@ -41,7 +41,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: kli
-        path: /usr/local/bin/kli
+        path: /usr/bin/kli
+    -
+      name: Install kli
+      run: |
+        chmod +x /usr/bin/kli
     -
       name: Checkout
       uses: actions/checkout@v4
