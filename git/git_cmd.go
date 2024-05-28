@@ -64,7 +64,7 @@ func (g *GitCmd) GetLogs(verbose bool) ([]GitLog, error) {
 
 // Tag returns a list of GitTag structs
 func (g *GitCmd) GetTags(verbose bool) ([]GitTag, error) {
-	out, err := g.Run(verbose, "tag", "-l", "--format='%(objectname)|%(refname:short)'")
+	out, err := g.Run(verbose, "tag", "-l", "--format=%(objectname)|%(refname:short)")
 	if err != nil {
 		return nil, err
 	}
