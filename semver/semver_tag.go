@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/KaribuLab/kli/git"
 	"github.com/spf13/cobra"
@@ -43,7 +42,6 @@ func createTagIfNeeded(pattern string, major int, minor int, patch int, createTa
 			fmt.Println(tag)
 			gitCmd.Tag(verbose, tag, commitHash)
 			gitCmd.PushTags(verbose, tag)
-			time.Sleep(10 * time.Second)
 			return tag
 		}
 	}
