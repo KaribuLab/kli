@@ -10,8 +10,8 @@ import (
 )
 
 var majorRegex = regexp.MustCompile(`(?i)(!|BREAKING CHANGE)`)
-var minorRegex = regexp.MustCompile(`(?i)feat`)
-var patchRegex = regexp.MustCompile(`(?i)fix`)
+var minorRegex = regexp.MustCompile(`(?i)feat(\(.*\))?:`)
+var patchRegex = regexp.MustCompile(`(?i)fix(\(.*\))?:`)
 
 func generateTag(verbose bool, pattern string, major, minor, patch int) string {
 	tag := strings.ReplaceAll(pattern, "{major}", fmt.Sprint(major))
