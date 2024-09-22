@@ -20,6 +20,50 @@ func (_m *MockCmd) EXPECT() *MockCmd_Expecter {
 	return &MockCmd_Expecter{mock: &_m.Mock}
 }
 
+// Clone provides a mock function with given fields: repository, branch, workdir
+func (_m *MockCmd) Clone(repository string, branch string, workdir string) error {
+	ret := _m.Called(repository, branch, workdir)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, string, string) error); ok {
+		r0 = rf(repository, branch, workdir)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockCmd_Clone_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Clone'
+type MockCmd_Clone_Call struct {
+	*mock.Call
+}
+
+// Clone is a helper method to define mock.On call
+//   - repository string
+//   - branch string
+//   - workdir string
+func (_e *MockCmd_Expecter) Clone(repository interface{}, branch interface{}, workdir interface{}) *MockCmd_Clone_Call {
+	return &MockCmd_Clone_Call{Call: _e.mock.On("Clone", repository, branch, workdir)}
+}
+
+func (_c *MockCmd_Clone_Call) Run(run func(repository string, branch string, workdir string)) *MockCmd_Clone_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockCmd_Clone_Call) Return(_a0 error) *MockCmd_Clone_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockCmd_Clone_Call) RunAndReturn(run func(string, string, string) error) *MockCmd_Clone_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // CurrentBranch provides a mock function with given fields: verbose
 func (_m *MockCmd) CurrentBranch(verbose bool) (string, error) {
 	ret := _m.Called(verbose)

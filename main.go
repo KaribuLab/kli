@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/KaribuLab/kli/git"
+	"github.com/KaribuLab/kli/project"
 	"github.com/KaribuLab/kli/semver"
 	"github.com/spf13/cobra"
 )
@@ -17,6 +18,7 @@ func main() {
 		Long:  "kli util CLI tool for cool developers",
 	}
 	rootCommand.AddCommand(semver.NewSemverCommand(gitCmd))
+	rootCommand.AddCommand(project.NewProjectCommand(gitCmd))
 	if err := rootCommand.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

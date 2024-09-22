@@ -14,6 +14,7 @@ type Cmd interface {
 	CurrentBranch(verbose bool) (string, error)
 	PushTags(verbose bool, tag string) error
 	RemoveTag(verbose bool, tag string) error
+	Clone(repository, branch string, workdir string) error
 }
 
 // GitCmd is a struct that holds the path to the git executable
@@ -133,4 +134,11 @@ func (g *GitCmd) RemoveTag(verbose bool, tag string) error {
 		return fmt.Errorf("error removing tag: %s", err)
 	}
 	return nil
+}
+
+// Clone clones a repository
+func (g *GitCmd) Clone(repository, branch string, workdir string) error {
+	fmt.Println("Cloning repository", repository, "on branch", branch)
+	_, err := g.Run(true, "clone", repository, "-b", branch, workdir)
+	return err
 }
