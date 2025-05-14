@@ -1,0 +1,151 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  kli:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build kli
+        id: build_kli
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o ./kli ./*.go
+      - name: Check tag
+        id: check_tag
+        run: |
+          chmod +x ./kli
+      - name: Upload kli
+        uses: actions/upload-artifact@v4
+        with:
+            name: kli
+            path: kli
+  check_tag:
+    needs: kli
+    runs-on: ubuntu-latest
+    outputs:
+      tag_exists: ${{ steps.check_tag.outputs.tag_exists }}
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    -
+      name: Download kli
+      uses: actions/download-artifact@v4
+      with:
+        name: kli
+        path: ./
+    -
+      name: Check tag
+      id: check_tag
+      run: |
+        chmod +x ./kli
+        LATEST_VERSION=$( ./kli semver 2>&1 )
+        LATEST_GIT_TAG=$( git describe --tags --abbrev=0 || echo "" )
+        echo "latest_version=$LATEST_VERSION"
+        echo "latest_git_tag=$LATEST_GIT_TAG"
+        if [ "$LATEST_VERSION" == "$LATEST_GIT_TAG" ]; then
+          echo "tag_exists=true"
+          echo "tag_exists=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "tag_exists=false"
+          echo "tag_exists=false" >> "$GITHUB_OUTPUT"
+        fi
+  create_tag:
+    needs: check_tag
+    runs-on: ubuntu-latest
+    if: needs.check_tag.outputs.tag_exists == 'false'
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v4
+      with:
+        ssh-key: ${{ secrets.KARIBU_SSH_KEY }}
+        fetch-depth: 0
+    -
+      name: Set up Git user
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+    -
+      name: Download kli
+      uses: actions/download-artifact@v4
+      with:
+        name: kli
+        path: ./
+    -
+      name: Push tags if needed
+      id: push_tags
+      run: |
+        chmod +x ./kli
+        ./kli semver -t -v
+  build:
+    name: Build and Release Binaries
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'
+          
+      - name: Get version from tag
+        id: get_version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          
+      - name: Build for Linux
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o ./bin/kli-linux-amd64 ./*.go
+          GOOS=linux GOARCH=arm64 go build -o ./bin/kli-linux-arm64 ./*.go
+        
+      - name: Build for macOS
+        run: |
+          GOOS=darwin GOARCH=amd64 go build -o ./bin/kli-darwin-amd64 ./*.go
+          GOOS=darwin GOARCH=arm64 go build -o ./bin/kli-darwin-arm64 ./*.go
+        
+      - name: Build for Windows
+        run: |
+          GOOS=windows GOARCH=amd64 go build -o ./bin/kli-windows-amd64.exe ./*.go
+      
+      - name: Compress binaries
+        run: |
+          cd bin
+          tar -czvf kli-linux-amd64.tar.gz kli-linux-amd64
+          tar -czvf kli-linux-arm64.tar.gz kli-linux-arm64
+          tar -czvf kli-darwin-amd64.tar.gz kli-darwin-amd64
+          tar -czvf kli-darwin-arm64.tar.gz kli-darwin-arm64
+          zip kli-windows-amd64.zip kli-windows-amd64.exe
+          cd ..
+      
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ env.RELEASE_VERSION }}
+          draft: false
+          prerelease: false
+          files: |
+            bin/kli-linux-amd64.tar.gz
+            bin/kli-linux-arm64.tar.gz
+            bin/kli-darwin-amd64.tar.gz
+            bin/kli-darwin-arm64.tar.gz
+            bin/kli-windows-amd64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
