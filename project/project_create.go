@@ -1,6 +1,7 @@
 package project
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -207,14 +208,14 @@ func NewProjectCommand(gitCmd git.Cmd) *cobra.Command {
 				return err
 			}
 			inputs := make(map[string]interface{})
+			reader := bufio.NewReader(os.Stdin)
 			for _, prompt := range projectConfig.Prompts {
-				var input string
 				fmt.Println(prompt.Description)
-				_, err = fmt.Scanln(&input)
+				input, err := reader.ReadString('\n')
 				if err != nil {
 					return err
 				}
-				inputs[prompt.Name] = strings.TrimSpace(strings.Trim(input, "\n"))
+				inputs[prompt.Name] = strings.TrimSpace(input)
 			}
 			projectPrompt := projectPrompt{
 				Inputs: inputs,
