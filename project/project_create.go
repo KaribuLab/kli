@@ -207,7 +207,7 @@ func NewProjectCommand(gitCmd git.Cmd) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			inputs := make(map[string]interface{})
+			inputs := make(map[string]any)
 			reader := bufio.NewReader(os.Stdin)
 			for _, prompt := range projectConfig.Prompts {
 				fmt.Println(prompt.Description)
